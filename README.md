@@ -1,66 +1,32 @@
-# HAck pad
+# HAck Pad Firmware
 
-## Overview
+This firmware is for the uploaded HAck Pad PCB using a Seeed XIAO ESP32-C3.
 
-HAck pad is a custom PCB project using a Seeed XIAO-compatible module and three Cherry MX-style push switches. The supplied KiCad project contains the schematic and PCB layout.
+## Switch mapping
 
-## Final PCB
+| Switch | PCB net | XIAO pin | ESP32-C3 GPIO | Key |
+|---|---|---|---:|---|
+| SW1 | D10 | D10 | GPIO10 | A |
+| SW2 | D9 | D9 | GPIO9 | B |
+| SW3 | D8 | D8 | GPIO8 | C |
 
-![Final PCB](images/final_pcb.png)
+The PCB file shows SW1 on D10, SW2 on D9 and SW3 on D8.
 
-The image above is an overview of the supplied PCB layout, showing the board outline, the XIAO module footprint, and three switch positions.
+## Important
 
-## CAD
+The ESP32-C3 cannot act as a native USB HID keyboard through its USB Serial/JTAG interface. This firmware therefore uses **Bluetooth Low Energy (BLE) HID**.
 
-![Final CAD](images/final_cad.png)
+## Arduino IDE setup
 
-A STEP model has been generated from the supplied `Shiny Densor.stl` mesh and is included in the `CAD` folder as `Shiny_Densor.step`.
+1. Install Arduino IDE.
+2. Install the Espressif ESP32 board package.
+3. Select `XIAO_ESP32C3`.
+4. Install the `ESP32C3-BLE-Keyboard` library so that `BleKeyboard.h` is available.
+5. Install `NimBLE-Arduino` if the selected BLE keyboard library requires it.
+6. Open `HAck_Pad_BLE.ino`.
+7. Select the XIAO ESP32-C3 COM port.
+8. Upload.
+9. On your computer, open Bluetooth settings and pair with **HAck Pad**.
+10. Press the three switches to send A, B and C.
 
-> Note: the STEP model is a faceted conversion of the supplied STL mesh. If the original design was created in a parametric CAD program, the native CAD model should be preferred for future modification.
-
-## Hardware
-
-The supplied BOM identifies:
-
-- U1: `MOUDLE-SEEEDUINO-XIAO`
-- SW1, SW2, SW3: `SW_Push`
-- Switch footprint: `Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB`
-- U1 footprint: `XIAO-Generic-Hybrid-14P-2.54-21X17.8MM...`
-
-See [BOM.csv](BOM.csv) for the generated bill of materials.
-
-## Repository Structure
-
-```text
-CAD/
-  Shiny_Densor.step
-  Shiny_Densor.stl
-
-Firmware/
-  README.txt
-
-PCB/
-  HAck_pad.kicad_pro
-  HAck_pad.kicad_sch
-  HAck_pad.kicad_pcb
-
-Production/
-  README.txt
-
-images/
-  final_pcb.png
-  final_cad.png
-
-BOM.csv
-README.md
-```
-
-## Manufacturing
-
-The final Gerber ZIP is **not included yet** because Gerber files must be plotted from the final KiCad PCB using KiCad's fabrication-output tools. The firmware source was also not present in the uploaded files.
-
-Before submission, generate the Gerbers and drill files from `PCB/HAck_pad.kicad_pcb`, put them into `Production/gerber.zip`, and add the final firmware source to `Firmware/` and `Production/`.
-
-## License
-
-Add the project's license here.
+The firmware uses `INPUT_PULLUP`, so each switch is treated as active-low.
